@@ -1,0 +1,24 @@
+li{
+    list-style: none;
+    border: none;
+    outline: none;
+}
+.list-task{
+background: #FFf;
+width: 100%;
+height: 550px;
+overflow-y: scroll;  
+border: 1px solid black;
+box-shadow: 1p 2px black;
+}
+.bg-ref{
+   background-color: aqua; 
+  color: #000;
+}
+.bg-sf{
+   background-color:rgb(245, 141, 141); 
+   color: #443535;
+}.bg-bf{
+    background-color:rgb(108, 255, 118); 
+color:#000 ;
+ }
