@@ -112,7 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       alert("✅ Login successful!");
-      window.location.href = "../index.html";
+  window.location.href = location.origin + "/todo-app/index.html"
     } catch (error) {
       alert("❌ Login error: " + error.message);
     }
