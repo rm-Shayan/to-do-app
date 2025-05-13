@@ -3,6 +3,9 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   onAuthStateChanged,
+  gogleService,
+  GoogleAuthProvider,
+  signInWithPopup,
   db,
   doc,
   setDoc,
@@ -33,10 +36,22 @@ const checkUserLogin = () => {
 document.addEventListener("DOMContentLoaded", () => {
   checkUserLogin();
 
+let userLocation = null;
+
+navigator.geolocation.getCurrentPosition((position) => {
+  userLocation = position.coords;
+  console.log(userLocation); // You can access latitude and longitude here
+}, (error) => {
+  console.error('Error getting location:', error);
+});
+
+
   const signUpForm = document.getElementById("auth-form-sign-up");
   const loginForm = document.getElementById("auth-form-login");
   const loginTab = document.getElementById("login-tab");
   const signUpTab = document.getElementById("signup-tab");
+ const googleLoginButton = document.getElementById("google-signIn-btn");
+ const googleSignUpButton = document.getElementById("google-signUp-btn");
 
   // 🧾 Toggle Login / Signup Form
   if (signUpTab && loginForm && loginTab && signUpForm) {
@@ -83,6 +98,7 @@ document.addEventListener("DOMContentLoaded", () => {
       await setDoc(doc(db, "users", user.uid), {
         name,
         email,
+        password,
         userId: user.uid,
         createdAt: new Date().toISOString(),
         lastLogin: new Date().toISOString(),
@@ -117,6 +133,92 @@ document.addEventListener("DOMContentLoaded", () => {
       alert("❌ Login error: " + error.message);
     }
   });
+
+googleLoginButton &&
+  googleLoginButton.addEventListener("click", async () => {
+    try {
+      const result = await signInWithPopup(auth, gogleService);
+      const user = result.user;
+
+      // Extract name and email from user object
+      const name = user.displayName || "Unknown";
+      const email = user.email;
+      const userId = user.uid;
+
+      // Reference to user's Firestore document
+      const userDocRef = doc(db, "users", userId);
+
+      // Save user data to Firestore (create or update)
+      await setDoc(
+        userDocRef,
+        {
+          name,
+          email,
+          userId,
+          createdAt: new Date().toISOString(),
+          lastLogin: new Date().toISOString(),
+          userLocation,
+        },
+        { merge: true } // Merge if document already exists
+      );
+
+      console.log("✅ Google Sign-In success and data saved");
+      alert("🎉 Signed in with Google!");
+
+      // Redirect to dashboard or home
+      window.location.href = location.origin + "/todo-app/index.html";
+    } catch (error) {
+      console.error("❌ Google Sign-In error:", error.message);
+      alert("❌ Google Sign-In failed: " + error.message);
+    }
+  });
+
+
+  googleSignUpButton &&
+  googleSignUpButton.addEventListener("click", async () => {
+    try {
+      const result = await signInWithPopup(auth, gogleService);
+      const user = result.user;
+
+      // Extract name and email from user object
+      const name = user.displayName || "Unknown";
+      const email = user.email;
+      const userId = user.uid;
+
+      // Reference to user's Firestore document
+      const userDocRef = doc(db, "users", userId);
+
+      // Save user data to Firestore (create or update)
+      await setDoc(
+        userDocRef,
+        {
+          name,
+          email,
+          userId,
+          createdAt: new Date().toISOString(),
+          lastLogin: new Date().toISOString(),
+          userLocation,
+
+        },
+        { merge: true } // Merge if document already exists
+      );
+
+      console.log("✅ Google Sign-In success and data saved");
+      alert("🎉 Signed in with Google!");
+
+      // Redirect to dashboard or home
+      window.location.href = location.origin + "/todo-app/index.html";
+    } catch (error) {
+      console.error("❌ Google Sign-In error:", error.message);
+      alert("❌ Google Sign-In failed: " + error.message);
+    }
+  });
+
+
+
+
 });
+
+
 
 export default checkUserLogin;

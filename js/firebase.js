@@ -5,7 +5,9 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   onAuthStateChanged,
-  signOut
+  signOut,
+   GoogleAuthProvider,
+   signInWithPopup
 } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-auth.js";
 import {
   getFirestore,
@@ -36,6 +38,7 @@ const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const db = getFirestore(app);
 const auth = getAuth(app);
+const gogleService=new GoogleAuthProvider()
 
 // ✅ Export modules
 export {
@@ -44,6 +47,9 @@ export {
   signInWithEmailAndPassword,
   onAuthStateChanged,
   signOut,
+  signInWithPopup,
+  gogleService,
+  GoogleAuthProvider,
   db,
   addDoc,
   doc,
